@@ -1,6 +1,7 @@
 ﻿using Business.Modules.Restaurants.DTOs;
 using Business.Modules.Restaurants.Services;
 using FastEndpoints;
+using LaCartaAPI.Handlers;
 
 namespace LaCartaAPI.Endpoints.Restaurants;
 
@@ -15,17 +16,23 @@ public class GetAllRestaurantsEndpoint : EndpointWithoutRequest<IEnumerable<Rest
 
     public override void Configure()
     {
-        Get("/api/restaurants");
+        Verbs(Http.GET);
+        Routes("/restaurants");
         AllowAnonymous();
-        Description(d => d
-            .WithSummary("Obtener todos los restaurantes")
-            .WithDescription("Devuelve una lista de todos los restaurantes activos e inactivos."));
-        Version(1);
     }
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var restaurants = await _restaurantService.GetAllRestaurantsAsync(ct);
-        await Send.OkAsync(restaurants, cancellation: ct);
+        try
+        {
+            var restaurants = await _restaurantService.GetAllRestaurantsAsync(ct);
+            await Send.OkAsync(restaurants, cancellation: ct);
+        }
+        catch(Exception ex)
+        {
+            await ErrorHandler.HandleExceptionAsync<EmptyRequest, IEnumerable<RestaurantDTO>>(ex, Send, ct);
+
+        }
+
     }
 }

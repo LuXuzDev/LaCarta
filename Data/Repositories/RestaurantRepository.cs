@@ -99,10 +99,10 @@ public class RestaurantRepository : IRestaurantRepository
             var restaurant = await _db.Restaurants
                 .Include(r => r.Municipality)
                 .Include(r => r.User)
-                .Include(r => r.Dishes)
+                //.Include(r => r.Dishes)
                 .FirstOrDefaultAsync
                 (r => r.Id == id);
-            if (restaurant == null)
+            if(restaurant == null)
                 throw new EntityNotFoundException("Restaurante", id);
             return restaurant;
         }

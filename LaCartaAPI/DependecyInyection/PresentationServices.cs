@@ -1,5 +1,5 @@
 ﻿using FastEndpoints;
-using FastEndpoints.Swagger;
+
 
 namespace LaCartaAPI.DependecyInyection;
 
@@ -12,9 +12,7 @@ public static class PresentationServices
         {
             s.Title = "LaCarta API";
             s.Description = "API para gestión de restaurantes";
-            s.Version = "v1";
         });
-        services.AddSwaggerGen();
         return services;
     }
 }

@@ -20,7 +20,13 @@ public class RestaurantServices : IRestaurantServices
     public async Task<IEnumerable<RestaurantDTO>> GetAllRestaurantsAsync(CancellationToken ct)
     {
         var restaurants = await _restaurantRepository.GetAllAsync();
-
         return _mapper.Map<IEnumerable<RestaurantDTO>>(restaurants);
+    }
+
+    public async Task<RestaurantDTO> GetByIdRestaurantAsync(int restaurantId,CancellationToken ct)
+    {
+        var restaurant = await _restaurantRepository.GetByIdAsync(restaurantId);
+
+        return _mapper.Map<RestaurantDTO>(restaurant);
     }
 }
