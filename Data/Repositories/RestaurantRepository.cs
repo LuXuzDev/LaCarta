@@ -57,7 +57,11 @@ public class RestaurantRepository : IRestaurantRepository
     {
         try
         {
-            var restaurants = await _db.Restaurants.ToListAsync();
+            var restaurants = await _db.Restaurants
+                .Include(r=> r.Municipality)
+                .Include(r=> r.User)
+                .Include(r=> r.Dishes)
+                .ToListAsync();
             return restaurants;
         }
         catch
@@ -71,7 +75,11 @@ public class RestaurantRepository : IRestaurantRepository
     {
         try
         {
-            var restaurant = await _db.Restaurants.FirstOrDefaultAsync
+            var restaurant = await _db.Restaurants
+                .Include(r => r.Municipality)
+                .Include(r => r.User)
+                .Include(r => r.Dishes)
+                .FirstOrDefaultAsync
                         (r => r.Email == email);
             if (restaurant == null)
                 throw new EntityNotFoundException("Restaurante", email);
@@ -88,7 +96,11 @@ public class RestaurantRepository : IRestaurantRepository
     {
         try
         {
-            var restaurant = await _db.Restaurants.FirstOrDefaultAsync
+            var restaurant = await _db.Restaurants
+                .Include(r => r.Municipality)
+                .Include(r => r.User)
+                .Include(r => r.Dishes)
+                .FirstOrDefaultAsync
                 (r => r.Id == id);
             if (restaurant == null)
                 throw new EntityNotFoundException("Restaurante", id);
@@ -161,7 +173,6 @@ public class RestaurantRepository : IRestaurantRepository
             existing.CloseHour = restaurant.CloseHour;
             existing.UserId = restaurant.UserId;
             existing.MunicipalityId = restaurant.MunicipalityId;
-            existing.CuisineTypeId = restaurant.CuisineTypeId;
             existing.IsActive = restaurant.IsActive;
             existing.UpdatedAt = DateTime.UtcNow;
 

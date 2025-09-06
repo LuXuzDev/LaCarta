@@ -1,4 +1,6 @@
 ﻿using Data;
+using Data.Repositories;
+using Domain.Modules.Restaurants.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -17,6 +19,7 @@ public static class InfrastructureServices
             );
 
         // Repositorios
+        services.AddScoped<IRestaurantRepository, RestaurantRepository>();
 
         return services;
     }

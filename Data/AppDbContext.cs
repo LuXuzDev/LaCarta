@@ -16,7 +16,6 @@ public class AppDbContext : DbContext
     public DbSet<Role> Roles { get; set; }
 
     public DbSet<Restaurant> Restaurants { get; set; }
-    public DbSet<CuisineType> CuisineTypes { get; set; }
 
     public DbSet<Dish> Dishs { get; set; }
     public DbSet<DishWarning> DishWarnings { get; set; }

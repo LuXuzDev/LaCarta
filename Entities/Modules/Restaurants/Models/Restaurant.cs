@@ -22,7 +22,6 @@ public class Restaurant : BaseEntity
     public int MunicipalityId { get; set; }
     public Municipality? Municipality { get; set; }
 
-    public int CuisineTypeId { get; set; }
     public CuisineType? CuisineType { get; set; }
 
     public ICollection<Dish> Dishes { get; set; } = new List<Dish>();

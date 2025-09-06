@@ -7,9 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Modules\Dishs\" />
-    <Folder Include="Modules\Restaurant\" />
-    <Folder Include="Modules\User\" />
+    <Folder Include="Modules\Dishs\DTOs\" />
+    <Folder Include="Modules\Dishs\Mappers\" />
+    <Folder Include="Modules\Users\DTOs\" />
+    <Folder Include="Modules\Users\Mappers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="15.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Entities\Domain.csproj" />
   </ItemGroup>
 
 </Project>
