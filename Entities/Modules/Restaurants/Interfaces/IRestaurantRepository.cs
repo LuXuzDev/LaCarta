@@ -1,4 +1,5 @@
-﻿using Domain.Modules.Restaurants.Models;
+﻿using Domain.Modules.Restaurants.Enums;
+using Domain.Modules.Restaurants.Models;
 
 
 namespace Domain.Modules.Restaurants.Interfaces;
@@ -9,6 +10,9 @@ public interface IRestaurantRepository
     Task<IEnumerable<Restaurant>> GetAllAsync();
     Task<Restaurant?> GetByIdAsync(int id);
     Task<Restaurant?> GetByEmailAsync(string email);
+    Task<IEnumerable<Restaurant>> GetByRestaurantsManagerId(int id);
+    Task<IEnumerable<Restaurant>> GetRestaurantsActiveAsync();
+    Task<IEnumerable<Restaurant>> GetByRestaurantsCousineType(CuisineType cousineTypeId);
 
 
     //Validacion

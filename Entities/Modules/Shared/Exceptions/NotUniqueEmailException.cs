@@ -1,6 +1,6 @@
 ﻿namespace Domain.Modules.Shared.Exceptions;
 
-class NotUniqueEmailException : DomainException
+public class NotUniqueEmailException : DomainException
 {
     public string Email { get; }
 

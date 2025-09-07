@@ -5,11 +5,11 @@ using LaCartaAPI.Handlers;
 
 namespace LaCartaAPI.Endpoints.Restaurants;
 
-public class GetAllRestaurantsEndpoint : EndpointWithoutRequest<IEnumerable<RestaurantDTO>>
+public class GetRestaurantsActivesEndpoint : EndpointWithoutRequest<IEnumerable<RestaurantDTO>>
 {
     private readonly IRestaurantServices _restaurantService;
 
-    public GetAllRestaurantsEndpoint(IRestaurantServices restaurantService)
+    public GetRestaurantsActivesEndpoint(IRestaurantServices restaurantService)
     {
         _restaurantService = restaurantService;
     }
@@ -17,7 +17,7 @@ public class GetAllRestaurantsEndpoint : EndpointWithoutRequest<IEnumerable<Rest
     public override void Configure()
     {
         Verbs(Http.GET);
-        Routes("/restaurants");
+        Routes("/restaurants/restaurants-actives");
         AllowAnonymous();
     }
 
@@ -25,10 +25,10 @@ public class GetAllRestaurantsEndpoint : EndpointWithoutRequest<IEnumerable<Rest
     {
         try
         {
-            var restaurants = await _restaurantService.GetRestaurantsAsync(ct);
+            var restaurants = await _restaurantService.GetRestaurantsActivesAsync(ct);
             await Send.OkAsync(restaurants, cancellation: ct);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             await ErrorHandler.HandleExceptionAsync<EmptyRequest, IEnumerable<RestaurantDTO>>(ex, Send, ct);
 

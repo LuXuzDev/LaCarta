@@ -1,4 +1,6 @@
-﻿using Domain.Modules.Restaurants.Interfaces;
+﻿using Domain.Modules.Restaurants.Enums;
+using Domain.Modules.Restaurants.Exceptions;
+using Domain.Modules.Restaurants.Interfaces;
 using Domain.Modules.Restaurants.Models;
 using Domain.Modules.Shared.Exceptions;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +12,7 @@ public class RestaurantRepository : IRestaurantRepository
     private readonly AppDbContext _db;
 
 
-    public RestaurantRepository (AppDbContext db){_db = db;}
+    public RestaurantRepository(AppDbContext db) { _db = db; }
 
 
     public async Task ActivateAsync(int restaurantId)
@@ -58,9 +60,9 @@ public class RestaurantRepository : IRestaurantRepository
         try
         {
             var restaurants = await _db.Restaurants
-                .Include(r=> r.Municipality)
-                .Include(r=> r.User)
-                .Include(r=> r.Dishes)
+                .Include(r => r.Municipality)
+                .Include(r => r.User)
+                .Include(r => r.Dishes)
                 .ToListAsync();
             return restaurants;
         }
@@ -99,10 +101,10 @@ public class RestaurantRepository : IRestaurantRepository
             var restaurant = await _db.Restaurants
                 .Include(r => r.Municipality)
                 .Include(r => r.User)
-                //.Include(r => r.Dishes)
+                .Include(r => r.Dishes)
                 .FirstOrDefaultAsync
                 (r => r.Id == id);
-            if(restaurant == null)
+            if (restaurant == null)
                 throw new EntityNotFoundException("Restaurante", id);
             return restaurant;
         }
@@ -117,6 +119,28 @@ public class RestaurantRepository : IRestaurantRepository
     {
         try
         {
+            var userExist = _db.Users
+                .Where(u => u.Id == restaurant.UserId && u.Role != null && u.Role.Name == "RestaurantManager")
+                .Any();
+            if (!userExist)
+                throw new EntityNotFoundException("User", restaurant.UserId);
+
+            var nameIsUnique = !_db.Restaurants.Any(r => r.Name == restaurant.Name);
+            if (!nameIsUnique)
+                throw new NotUniqueNameException(restaurant.Name);
+
+            var emailIsUnique = !_db.Restaurants.Any(r => r.Email == restaurant.Email);
+            if (!emailIsUnique)
+                throw new NotUniqueEmailException(restaurant.Email);
+
+            var phoneNumberIsUnique = !_db.Restaurants.Any(r => r.PhoneNumber == restaurant.PhoneNumber);
+            if (!phoneNumberIsUnique)
+                throw new NotUniquePhoneNumber(restaurant.PhoneNumber);
+
+            var municipalityExist = _db.Municipality.Any(m => m.Id == restaurant.MunicipalityId);
+            if (!municipalityExist)
+                throw new EntityNotFoundException("Municipality", restaurant.MunicipalityId);
+
             await _db.Restaurants.AddAsync(restaurant);
             await _db.SaveChangesAsync();
         }
@@ -125,6 +149,7 @@ public class RestaurantRepository : IRestaurantRepository
             throw;
         }
     }
+
 
 
     public async Task<bool> IsEmailUniqueAsync(string email, int? excludeRestaurantId = null)
@@ -184,4 +209,33 @@ public class RestaurantRepository : IRestaurantRepository
         }
     }
 
+
+    public async Task<IEnumerable<Restaurant>> GetByRestaurantsManagerId(int id)
+    {
+        return await _db.Restaurants.Where(r => r.UserId == id)
+            .Include(r => r.Municipality)
+            .Include(r => r.User)
+            .Include(r => r.Dishes)
+            .ToListAsync();
+    }
+
+
+    public async Task<IEnumerable<Restaurant>> GetRestaurantsActiveAsync()
+    {
+        return await _db.Restaurants.Where(r => r.IsActive)
+           .Include(r => r.Municipality)
+          .Include(r => r.User)
+          .Include(r => r.Dishes)
+          .ToListAsync();
+    }
+
+
+    public async Task<IEnumerable<Restaurant>> GetByRestaurantsCousineType(CuisineType cousineTypeId)
+    {
+        return await _db.Restaurants.Where(r => r.CuisineType == cousineTypeId )
+            .Include(r => r.Municipality)
+          .Include(r => r.User)
+          .Include(r => r.Dishes)
+          .ToListAsync();
+    }
 }

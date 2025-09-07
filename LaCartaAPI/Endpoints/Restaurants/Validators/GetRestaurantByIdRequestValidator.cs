@@ -1,9 +1,10 @@
-﻿using FluentValidation;
+﻿using FastEndpoints;
+using FluentValidation;
 using LaCartaAPI.Endpoints.Restaurants.Requests;
 
 namespace LaCartaAPI.Endpoints.Restaurants.Validators;
 
-public class GetRestaurantByIdRequestValidator : FastEndpoints.Validator<GetRestaurantByIdRequest>
+public class GetRestaurantByIdRequestValidator : Validator<GetRestaurantByIdRequest>
 {
     public GetRestaurantByIdRequestValidator()
     {
