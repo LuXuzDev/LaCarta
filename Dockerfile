@@ -12,17 +12,17 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 COPY *.sln .
-COPY API/*.csproj ./API/
+COPY LaCartaAPI/*.csproj ./LaCartaAPI/
 COPY Data/*.csproj ./Data/
 COPY Business/*.csproj ./Business/
-COPY Domain/*.csproj ./Domain/
+COPY Entities/*.csproj ./Entities/
 
 RUN dotnet restore
 
-COPY API/. ./API/
+COPY LaCartaAPI/. ./LaCartaAPI/
 COPY Data/. ./Data/
 COPY Business/. ./Business/
-COPY Domain/. ./Domain/
+COPY Entities/. ./Entities/
 
 RUN dotnet publish "API/LaCartaAPI.csproj" -c Release -o /app/publish
 
