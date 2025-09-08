@@ -1,4 +1,4 @@
-# Usa .NET 8.0 (no 9.0, que aún no es estable)
+# Usa .NET 8.0 (no 9.0, que aï¿½n no es estable)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 8080
@@ -7,21 +7,21 @@ EXPOSE 8080
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copia y restaura la solución (incluye todos los proyectos)
+# Copia y restaura la soluciï¿½n (incluye todos los proyectos)
 COPY *.sln .
 COPY API/*.csproj ./API/
 COPY Data/*.csproj ./Data/
 COPY Business/*.csproj ./Business/
-COPY Domain/*.csproj ./Domain/
+COPY Entities/*.csproj ./Entities/
 
 # Restaura dependencias
 RUN dotnet restore
 
-# Copia todo el código
+# Copia todo el cï¿½digo
 COPY LaCartaAPI/. ./LaCartaAPI/
 COPY Data/. ./Data/
 COPY Business/. ./Business/
-COPY Domain/. ./Domain/
+COPY Entities/*.csproj ./Entities/
 
 # Publica la API principal
 RUN dotnet publish "LaCartaAPI/LaCartaAPI.csproj" -c Release -o /app/publish
