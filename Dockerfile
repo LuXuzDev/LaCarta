@@ -9,7 +9,7 @@ WORKDIR /src
 
 # Copia y restaura la soluci�n (incluye todos los proyectos)
 COPY *.sln .
-COPY API/*.csproj ./API/
+COPY LaCartaAPI/. ./LaCartaAPI/
 COPY Data/*.csproj ./Data/
 COPY Business/*.csproj ./Business/
 COPY Entities/*.csproj ./Entities/
