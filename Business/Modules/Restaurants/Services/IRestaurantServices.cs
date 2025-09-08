@@ -8,15 +8,20 @@ public interface IRestaurantServices
 {
     Task<IEnumerable<RestaurantDTO>> GetRestaurantsAsync(CancellationToken ct);
 
-    Task<RestaurantDTO> GetByIdRestaurantAsync(int restaurantId , CancellationToken ct);
+    Task<RestaurantDTO> GetByIdRestaurantAsync(int restaurantId, CancellationToken ct);
 
     Task<IEnumerable<RestaurantDTO>> GetRestaurantsByRestaurantManagerIdAsync
-        (int  restaurantManagerId , CancellationToken ct);
+        (int restaurantManagerId, CancellationToken ct);
 
     Task<IEnumerable<RestaurantDTO>> GetRestaurantsActivesAsync(CancellationToken ct);
 
     Task<IEnumerable<RestaurantDTO>> GetByRestaurantsCousineTypeAsync(CuisineType cousineType, CancellationToken ct);
 
     Task CreateRestaurantAsync(CreateRestaurantDTO restaurant, CancellationToken ct);
+
+    Task ActivateRestaurantAsync(int restaurantId, CancellationToken ct);
+
+    Task DesactivateRestaurantAsync(int restaurantId, CancellationToken ct);
+
 
 }

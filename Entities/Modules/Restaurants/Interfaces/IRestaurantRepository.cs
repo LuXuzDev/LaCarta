@@ -25,5 +25,5 @@ public interface IRestaurantRepository
 
     // Gestión de estado 
     Task ActivateAsync(int restaurantId);
-    Task DeactivateAsync(int restaurantId);
+    Task DesactivateAsync(int restaurantId);
 }

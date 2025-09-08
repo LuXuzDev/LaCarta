@@ -35,7 +35,7 @@ public class RestaurantRepository : IRestaurantRepository
     }
 
 
-    public async Task DeactivateAsync(int restaurantId)
+    public async Task DesactivateAsync(int restaurantId)
     {
         try
         {
