@@ -60,4 +60,15 @@ public class RestaurantServices : IRestaurantServices
         restaurantEntity.UpdatedAt = DateTime.UtcNow;
         await _restaurantRepository.AddAsync(restaurantEntity);
     }
+
+    public async Task ActivateRestaurantAsync(int restaurantId, CancellationToken ct)
+    {
+        await _restaurantRepository.ActivateAsync(restaurantId);
+    }
+    
+    public async Task DesactivateRestaurantAsync(int restaurantId, CancellationToken ct)
+    {
+        await _restaurantRepository.DesactivateAsync(restaurantId);
+
+    }
 }
