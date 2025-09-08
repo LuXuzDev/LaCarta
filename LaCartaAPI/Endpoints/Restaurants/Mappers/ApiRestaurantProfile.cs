@@ -7,5 +7,6 @@ public class ApiRestaurantProfile : Profile
     public ApiRestaurantProfile()
     {
         CreateMap<CreateRestaurantRequest, CreateRestaurantDTO>();
+        CreateMap<UpdateRestaurantRequest, UpdateRestaurantDTO>();
     }
 }

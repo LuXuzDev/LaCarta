@@ -10,7 +10,7 @@ public interface IRestaurantServices
 
     Task<RestaurantDTO> GetByIdRestaurantAsync(int restaurantId, CancellationToken ct);
 
-    Task<IEnumerable<RestaurantDTO>> GetRestaurantsByRestaurantManagerIdAsync
+    Task<IEnumerable<RestaurantDTO>> GetRestaurantsByManagerIdAsync
         (int restaurantManagerId, CancellationToken ct);
 
     Task<IEnumerable<RestaurantDTO>> GetRestaurantsActivesAsync(CancellationToken ct);
@@ -19,9 +19,5 @@ public interface IRestaurantServices
 
     Task CreateRestaurantAsync(CreateRestaurantDTO restaurant, CancellationToken ct);
 
-    Task ActivateRestaurantAsync(int restaurantId, CancellationToken ct);
-
-    Task DesactivateRestaurantAsync(int restaurantId, CancellationToken ct);
-
-
+    Task UpdateRestaurantAsync(UpdateRestaurantDTO restaurant, CancellationToken ct);
 }

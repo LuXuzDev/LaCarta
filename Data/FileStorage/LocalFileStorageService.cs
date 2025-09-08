@@ -30,4 +30,49 @@ public class LocalFileStorageService : IFileStorageService
         // Retornar la ruta relativa
         return Path.Combine("Images", fileName);
     }
+
+    public async Task<bool> DeleteFileAsync(string filePath)
+    {
+        if (string.IsNullOrEmpty(filePath))
+            return false;
+
+        try
+        {
+            // Convertir ruta relativa a física
+            var physicalPath = Path.Combine(Directory.GetCurrentDirectory(), filePath.Replace("/", "\\"));
+
+            // Verificar que el archivo esté dentro de la carpeta permitida (evitar ../)
+            var rootPath = Path.GetFullPath(Directory.GetCurrentDirectory());
+            var fileFullPath = Path.GetFullPath(physicalPath);
+
+            if (!fileFullPath.StartsWith(rootPath, StringComparison.OrdinalIgnoreCase))
+                return false; // Posible ataque de navegación de directorios
+
+            if (File.Exists(physicalPath))
+            {
+                File.Delete(physicalPath);
+                return true;
+            }
+
+            return false; // No existe, pero no es un error
+        }
+        catch (IOException)
+        {
+            // No se puede acceder (en uso, permisos, etc.)
+            return false;
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return false;
+        }
+    }
+
+    public Task<bool> FileExistsAsync(string filePath)
+    {
+        if (string.IsNullOrEmpty(filePath))
+            return Task.FromResult(false);
+
+        var physicalPath = Path.Combine(Directory.GetCurrentDirectory(), filePath.Replace("/", "\\"));
+        return Task.FromResult(File.Exists(physicalPath));
+    }
 }
