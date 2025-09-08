@@ -1,30 +1,30 @@
-# Usa .NET 8.0 (no 9.0, que a�n no es estable)
+# Usa .NET 8.0
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 8080
+
+# Directorio para datos persistentes (aquí se montará el volumen)
+# Este será el punto de montaje: /app/data
+RUN mkdir -p /app/data && chmod -R 777 /app/data
 
 # Etapa de build
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copia y restaura la soluci�n (incluye todos los proyectos)
 COPY *.sln .
-COPY LaCartaAPI/. ./LaCartaAPI/
+COPY API/*.csproj ./API/
 COPY Data/*.csproj ./Data/
 COPY Business/*.csproj ./Business/
-COPY Entities/*.csproj ./Entities/
+COPY Domain/*.csproj ./Domain/
 
-# Restaura dependencias
 RUN dotnet restore
 
-# Copia todo el c�digo
-COPY LaCartaAPI/. ./LaCartaAPI/
+COPY API/. ./API/
 COPY Data/. ./Data/
 COPY Business/. ./Business/
-COPY Entities/*.csproj ./Entities/
+COPY Domain/. ./Domain/
 
-# Publica la API principal
-RUN dotnet publish "LaCartaAPI/LaCartaAPI.csproj" -c Release -o /app/publish
+RUN dotnet publish "API/LaCartaAPI.csproj" -c Release -o /app/publish
 
 # Etapa final
 FROM base AS final
@@ -34,7 +34,8 @@ COPY --from=build /app/publish .
 # Puerto
 ENV ASPNETCORE_URLS=http://*:8080
 
-# Volumen para almacenamiento persistente
+# Directorio donde se montará el volumen (Koyeb lo hará)
+# Tú solo defines que existe y es accesible
 VOLUME /app/data
 
 # Punto de entrada
