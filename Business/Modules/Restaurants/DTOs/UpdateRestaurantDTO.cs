@@ -16,4 +16,5 @@ public class UpdateRestaurantDTO
     public int MunicipalityId { get; set; }
     public CuisineType CuisineType { get; set; }
     public bool IsActive { get; set; }
+    public ICollection<RestaurantTag> RestaurantTags { get; set; }
 }

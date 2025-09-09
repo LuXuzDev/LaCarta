@@ -24,5 +24,7 @@ public class Restaurant : BaseEntity
 
     public CuisineType? CuisineType { get; set; }
 
+    public ICollection<RestaurantTag> RestaurantTags { get; set; }
+
     public ICollection<Dish> Dishes { get; set; } = new List<Dish>();
 }

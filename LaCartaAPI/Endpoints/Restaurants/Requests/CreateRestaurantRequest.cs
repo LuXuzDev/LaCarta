@@ -17,4 +17,5 @@ public class CreateRestaurantRequest
     public int MunicipalityId { get; set; }
 
     public CuisineType CuisineType { get; set; }
+    public ICollection<RestaurantTag> RestaurantTags { get; set; }
 }

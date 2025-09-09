@@ -9,7 +9,11 @@ public class RestaurantProfile : Profile
 {
     public RestaurantProfile()
     {
-        CreateMap<Restaurant, RestaurantDTO>().ReverseMap();
+        CreateMap<Restaurant, RestaurantDTO>()
+            .ForMember(
+                dest => dest.RestaurantTags,
+                opt => opt.MapFrom(src => src.RestaurantTags.Select(tag => tag.ToString()).ToList())
+            );
         CreateMap<CreateRestaurantDTO,Restaurant>().ReverseMap();
     }
 }
