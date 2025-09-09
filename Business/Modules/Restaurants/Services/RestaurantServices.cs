@@ -126,11 +126,28 @@ public class RestaurantServices : IRestaurantServices
             var imageExist = await _fileStorageServices.FileExistsAsync(restaurantExists.Image!);
             if (imageExist)
                 await _fileStorageServices.DeleteFileAsync(restaurantExists.Image!);
-            imageURL =await _fileStorageServices.SaveFileAsync(restaurant.Image);
+            imageURL = await _fileStorageServices.SaveFileAsync(restaurant.Image);
         }
 
         restaurantExists.Image = imageURL;
-        await _restaurantRepository.UpdateAsync(restaurantExists, ct);
+
+        UpdateRestaurat(restaurant,restaurantExists);
+        
+        await _restaurantRepository.UpdateAsync(ct);
+    }
+
+
+    private void UpdateRestaurat (UpdateRestaurantDTO restaurant, Restaurant restaurantExists)
+    {
+        restaurantExists.Name = restaurant.Name;
+        restaurantExists.Email = restaurant.Email;
+        restaurantExists.PhoneNumber = restaurant.PhoneNumber;
+        restaurantExists.HasDelivery = restaurant.HasDelivery;
+        restaurantExists.OpenHour = restaurant.OpenHour;
+        restaurantExists.CloseHour = restaurant.CloseHour;
+        restaurantExists.MunicipalityId = restaurant.MunicipalityId;
+        restaurantExists.IsActive = restaurant.IsActive;
+        restaurantExists.UpdatedAt = DateTime.UtcNow;
     }
 
 

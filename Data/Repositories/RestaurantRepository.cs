@@ -112,24 +112,11 @@ public class RestaurantRepository : IRestaurantRepository
     }
 
 
-    public async Task UpdateAsync(Restaurant restaurant, CancellationToken ct)
+    public async Task UpdateAsync( CancellationToken ct)
     {
         try
         {
-            // Actualiza los campos necesarios
-            restaurant.Name = restaurant.Name;
-            restaurant.Email = restaurant.Email;
-            restaurant.PhoneNumber = restaurant.PhoneNumber;
-            restaurant.Image = restaurant.Image;
-            restaurant.HasDelivery = restaurant.HasDelivery;
-            restaurant.OpenHour = restaurant.OpenHour;
-            restaurant.CloseHour = restaurant.CloseHour;
-            restaurant.UserId = restaurant.UserId;
-            restaurant.MunicipalityId = restaurant.MunicipalityId;
-            restaurant.IsActive = restaurant.IsActive;
-            restaurant.UpdatedAt = DateTime.UtcNow;
-
-            await _db.SaveChangesAsync();
+            await _db.SaveChangesAsync(ct);
         }
         catch
         {
