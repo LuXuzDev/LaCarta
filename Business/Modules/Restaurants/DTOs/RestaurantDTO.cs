@@ -1,4 +1,6 @@
-﻿namespace Business.Modules.Restaurants.DTOs;
+﻿using Domain.Modules.Restaurants.Enums;
+
+namespace Business.Modules.Restaurants.DTOs;
 
 public record RestaurantDTO
 {
@@ -18,6 +20,8 @@ public record RestaurantDTO
     public string MunicipalityName { get; set; }
 
     public string CuisineType { get; set; }
+
+    public ICollection<string> RestaurantTags { get; set; }
 
     //public ICollection<DishDTO> Dishes { get; set; } = new List<DishDTO>();
 }

@@ -16,4 +16,6 @@ public class CreateRestaurantDTO
     public int UserId { get; set; }
     public int MunicipalityId { get; set; }
     public CuisineType CuisineType { get; set; }
+    public ICollection<RestaurantTag> RestaurantTags { get; set; }
+    
 }

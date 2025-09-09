@@ -148,6 +148,8 @@ public class RestaurantServices : IRestaurantServices
         restaurantExists.MunicipalityId = restaurant.MunicipalityId;
         restaurantExists.IsActive = restaurant.IsActive;
         restaurantExists.UpdatedAt = DateTime.UtcNow;
+        restaurantExists.CuisineType = restaurant.CuisineType;
+        restaurantExists.RestaurantTags = restaurant.RestaurantTags;
     }
 
 

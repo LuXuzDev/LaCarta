@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Domain.Modules.Restaurants.Enums;
+using FluentValidation;
 using LaCartaAPI.Endpoints.Restaurants.Requests;
 
 public class UpdateRestaurantRequestValidator : AbstractValidator<UpdateRestaurantRequest>
@@ -48,6 +49,13 @@ public class UpdateRestaurantRequestValidator : AbstractValidator<UpdateRestaura
         RuleFor(x => x.CuisineType)
             .IsInEnum().WithMessage("El tipo de cocina no es válido.")
             .When(x => x.CuisineType != null);
+
+        //Restaurant Tags
+        RuleFor(x => x.RestaurantTags)
+            .NotNull().WithMessage("Debe especificar al menos un tag de restaurante.")
+            .Must(tags => tags.All(tag => Enum.IsDefined(typeof(RestaurantTag), tag)))
+            .WithMessage("Uno o más tags de restaurante no son válidos.");
+
     }
 
     private bool BeValidImageFile(IFormFile file)
