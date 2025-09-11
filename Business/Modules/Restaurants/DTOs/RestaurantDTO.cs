@@ -8,6 +8,7 @@ public record RestaurantDTO
     public required string Name { get; set; }
     public required string Email { get; set; }
     public required string PhoneNumber { get; set; }
+    public string Description { get; set; }
     public string? Image { get; set; }
     public bool HasDelivery { get; set; }
     public TimeSpan OpenHour { get; set; }

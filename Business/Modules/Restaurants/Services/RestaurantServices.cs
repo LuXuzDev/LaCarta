@@ -150,6 +150,7 @@ public class RestaurantServices : IRestaurantServices
         restaurantExists.UpdatedAt = DateTime.UtcNow;
         restaurantExists.CuisineType = restaurant.CuisineType;
         restaurantExists.RestaurantTags = restaurant.RestaurantTags;
+        restaurantExists.Description = restaurant.Description;
     }
 
 

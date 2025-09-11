@@ -9,6 +9,7 @@ public class UpdateRestaurantDTO
     public string Name { get; set; }
     public string Email { get; set; }
     public string PhoneNumber { get; set; }
+    public string Description { get; set; }
     public IFormFile Image { get; set; }
     public bool HasDelivery { get; set; }
     public TimeSpan OpenHour { get; set; }
