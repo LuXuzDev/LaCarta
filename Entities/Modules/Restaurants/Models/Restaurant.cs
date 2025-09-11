@@ -13,6 +13,7 @@ public class Restaurant : BaseEntity
     public required string PhoneNumber { get; set; }
     public string? Image { get; set; }
     public bool HasDelivery { get; set; }
+    public string Description { get; set; }
     public TimeSpan OpenHour { get; set; }
     public TimeSpan CloseHour { get; set; }
 
