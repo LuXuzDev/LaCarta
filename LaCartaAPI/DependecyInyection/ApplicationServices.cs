@@ -1,4 +1,6 @@
-﻿using Business.Modules.Restaurants.Mappers;
+﻿using Business.Modules.Dishes.Mappers;
+using Business.Modules.Dishes.Services;
+using Business.Modules.Restaurants.Mappers;
 using Business.Modules.Restaurants.Services;
 using Data.FileStorage;
 using Domain.FileStorage;
@@ -14,6 +16,7 @@ public static class ApplicationServices
     {
         //Servicios de negocio
         services.AddScoped<IRestaurantServices, RestaurantServices>();
+        services.AddScoped<IDishServices, DishServices>();
 
         //Servicio Imagenes
         services.AddScoped<IFileStorageService, LocalFileStorageService>();
@@ -36,6 +39,9 @@ public static class ApplicationServices
         //Servicios de mappeo
         services.AddAutoMapper(cfg => cfg.AddMaps(typeof(RestaurantProfile).Assembly));
         services.AddAutoMapper(cfg => cfg.AddMaps(typeof(ApiRestaurantProfile).Assembly));
+        services.AddAutoMapper(cfg => cfg.AddMaps(typeof(ApiDishProfile).Assembly));
+        services.AddAutoMapper(cfg => cfg.AddMaps(typeof(DishProfile).Assembly));
+        
         return services;
     }
 }

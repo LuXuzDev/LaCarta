@@ -14,12 +14,9 @@ public class AppDbContext : DbContext
 
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }
-
     public DbSet<Restaurant> Restaurants { get; set; }
-
     public DbSet<Dish> Dishs { get; set; }
     public DbSet<DishWarning> DishWarnings { get; set; }
-
     public DbSet<Municipality> Municipality { get; set; }
 
     //Clase intermedia relacion n <-> m entre User y Restaurant
