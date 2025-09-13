@@ -6,10 +6,8 @@ namespace Domain.Modules.Dishs.Interfaces;
 public interface IDishRepository
 {
     // Consultas
-    Task<IEnumerable<Dish>> GetAllAsync();
-    Task<Dish?> GetByIdAsync(int id);
-    Task<Dish?> GetByNameAsync(string name, int restaurantId);
-    Task<IEnumerable<Dish>> GetByRestaurantIdAsync(int restaurantId);
+    Task<Dish> GetByIdAsync(int dishId, CancellationToken ct );
+    Task<IEnumerable<Dish>> GetByRestaurantIdAsync(int restaurantId, CancellationToken ct);
 
     //Validacion
     Task<bool> IsNameUniqueAsync(string name, int restaurantId, int? excludeDishId = null);
@@ -18,7 +16,5 @@ public interface IDishRepository
     Task AddAsync(Dish dish);
     Task UpdateAsync(Dish dish);
 
-    // Gestión de estado 
-    Task ActivateAsync(int dishId);
-    Task DeactivateAsync(int dishId);
+
 }

@@ -1,6 +1,8 @@
-﻿using Data;
+﻿using Business.Modules.Dishes.Services;
+using Data;
 using Data.Repositories;
 using Domain.Modules.Address.Interfaces;
+using Domain.Modules.Dishs.Interfaces;
 using Domain.Modules.Restaurants.Interfaces;
 using Domain.Modules.Users.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -24,7 +26,7 @@ public static class InfrastructureServices
         services.AddScoped<IRestaurantRepository, RestaurantRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IMunicipalityRepository, MunicipalityRepository>();
-        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IDishRepository, DishRepository>();
 
         return services;
     }
