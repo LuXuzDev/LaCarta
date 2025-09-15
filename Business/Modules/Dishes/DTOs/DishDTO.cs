@@ -11,6 +11,7 @@ public class DishDTO
     public required string Description { get; set; }
     public required DishType DishType { get; set; }
     public bool IsActive { get; set; }
+    public required int RestaurantId{ get; set; }
 
 
 }

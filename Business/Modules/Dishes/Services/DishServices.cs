@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -33,34 +35,51 @@ public class DishServices : IDishServices
         _restaurantRepository = restaurantRepository;
     }
 
-    public async Task CreateDishAsync(int idRestaurant, CreateDishDTO dishDTO, CancellationToken ct)
+   public async Task CreateDishAsync(int idRestaurant, CreateDishDTO dishDTO, CancellationToken ct)
+{
+    // Validar que el restaurante exista
+    var restaurant = await _restaurantRepository.GetByIdAsync(idRestaurant, ct);
+    if (restaurant == null)
+        throw new EntityNotFoundException("Restaurant", idRestaurant);
+
+    // Validar que el nombre sea único dentro del restaurante
+    var nameExists = await _dishRepository.IsNameUniqueAsync(dishDTO.Name, idRestaurant);
+    if (!nameExists)
+        throw new NotUniqueNameException(dishDTO.Name);
+
+
+    if (dishDTO.Price <= 0)
+        throw new ValidationException(
+            message: "El precio del plato debe ser mayor que cero."
+        );
+
+    //  Mapear DTO a entidad
+    var dishEntity = _mapper.Map<Dish>(dishDTO);
+
+    //  Asociar explícitamente al restaurante (desde la ruta)
+    dishEntity.RestaurantId = idRestaurant;
+
+    //  Subir imagen si existe
+    if (dishDTO.Image != null)
     {
+        try
         {
-            //  Validación del restaurante
-            var restaurant = await _restaurantRepository.GetByIdAsync(idRestaurant, ct);
-            if (restaurant == null)
-                throw new EntityNotFoundException("Restaurant", idRestaurant);
-
-
-            var nameExists = await _dishRepository.IsNameUniqueAsync(dishDTO.Name, idRestaurant);
-            if (!nameExists)
-                throw new NotUniqueNameException(dishDTO.Name);
-
-            //  Mapear DTO a entidad
-            var dishEntity = _mapper.Map<Dish>(dishDTO);
-
-            //  Subir imagen si existe
-            if (dishDTO.Image != null)
-            {
-                var imageUrl = await _fileStorageServices.SaveFileAsync(dishDTO.Image);
-                dishEntity.Image = imageUrl;
-            }
-
-            dishEntity.IsActive = false;
-            dishEntity.CreatedAt = DateTime.UtcNow;
-            dishEntity.UpdatedAt = DateTime.UtcNow;
-            await _dishRepository.AddAsync(dishEntity);
+            var imageUrl = await _fileStorageServices.SaveFileAsync(dishDTO.Image);
         }
+        catch (Exception ex)
+        {
+            throw new FileLoadException("Error al subir la imagen del plato.", ex);
+        }
+    }
+
+    //  Establecer metadatos
+    dishEntity.IsActive = true; // Puedes mover esto a una constante si lo usas mucho
+    dishEntity.CreatedAt = DateTime.UtcNow;
+    dishEntity.UpdatedAt = DateTime.UtcNow;
+
+    // . Guardar en base de datos
+    await _dishRepository.AddAsync(dishEntity, ct);
+
     }
     public async Task<DishDTO> GetByIdAsync(int dishId, CancellationToken ct)
 {
@@ -84,8 +103,49 @@ public class DishServices : IDishServices
     return dishDTOS;
 }
 
-    public Task UpdateDishAsync(UpdateDishDTO dish, CancellationToken ct)
+    public async Task UpdateDishAsync(UpdateDishDTO dto, CancellationToken ct)
+{
+    var dish = await _dishRepository.GetByIdAsync(dto.Id, ct);
+    if (dish == null)
+        throw new EntityNotFoundException("Dish", dto.Id);
+
+    // Validar unicidad de nombre (solo si cambia)
+    if (dto.Name != null && dto.Name != dish.Name)
     {
-        throw new NotImplementedException();
+        var nameExists = await _dishRepository.IsNameUniqueAsync(dto.Name, dish.RestaurantId, dto.Id);
+        if (!nameExists)
+            throw new NotUniqueNameException(dto.Name);
     }
+
+    // Manejo de imagen
+    string? currentImage = dish.Image;
+    string? newImageUrl = currentImage;
+
+    if (dto.Image != null)
+    {
+        // Eliminar imagen anterior si existe y no es nula
+        if (!string.IsNullOrEmpty(currentImage))
+        {
+            var imageExists = await _fileStorageServices.FileExistsAsync(currentImage);
+            if (imageExists)
+                await _fileStorageServices.DeleteFileAsync(currentImage);
+        }
+
+        // Subir nueva imagen
+        newImageUrl = await _fileStorageServices.SaveFileAsync(dto.Image);
+         }
+
+    dish.Image = newImageUrl;
+
+    // Actualizar propiedades (solo si se enviaron)
+    if (dto.Name != null) dish.Name = dto.Name;
+    if (dto.Price.HasValue) dish.Price = dto.Price.Value;
+    if (dto.Description != null) dish.Description = dto.Description;
+    if (dto.IsActive.HasValue) dish.IsActive = dto.IsActive.Value;
+
+    dish.UpdatedAt = DateTime.UtcNow; // ← Actualiza timestamp
+
+    // Guardar cambios (usando el mismo patrón que UpdateRestaurantAsync)
+    await _dishRepository.UpdateAsync(ct);
+}
 }
