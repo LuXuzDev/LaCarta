@@ -66,6 +66,7 @@ public static class ErrorHandler
         };
 
         string jsonResponse = JsonSerializer.Serialize(errorResponse);
+        if(ct.IsCancellationRequested) return;
         await sender.StringAsync(jsonResponse, statusCode, "application/json; charset=utf-8", ct);
     }
 }

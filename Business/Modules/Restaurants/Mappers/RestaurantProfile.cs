@@ -13,7 +13,13 @@ public class RestaurantProfile : Profile
             .ForMember(
                 dest => dest.RestaurantTags,
                 opt => opt.MapFrom(src => src.RestaurantTags.Select(tag => tag.ToString()).ToList())
-            );
-        CreateMap<CreateRestaurantDTO,Restaurant>().ReverseMap();
+            )
+        .ForMember(
+    dest => dest.Image,
+    opt => opt.MapFrom(src => src.Image != null
+        ? $"/{src.Image.Replace("\\", "/")}"
+        : null)
+);
+        CreateMap<CreateRestaurantDTO, Restaurant>().ReverseMap();
     }
 }
