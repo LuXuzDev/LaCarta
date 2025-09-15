@@ -1,9 +1,10 @@
-
 using FastEndpoints;
-using LaCartaAPI.Endpoints.Restaurants.Requests;
 using LaCartaAPI.Handlers;
 using Business.Modules.Dishes.DTOs;
 using Business.Modules.Dishes.Services;
+using LaCartaAPI.Endpoints.Restaurants.Requests;
+using Domain.Modules.Dishs.Enums;
+using LaCartaAPI.Endpoints.Dishes.Validators;
 
 namespace LaCartaAPI.Endpoints.Dishes;
 
@@ -24,21 +25,21 @@ public class CreateDishEndpoint : Endpoint<CreateDishRequest, DishDTO>
         Routes("/dishes");
         AllowAnonymous();
         AllowFormData();
+        Validator<CreateDishRequestValidator>();
     }
 
     public override async Task HandleAsync(CreateDishRequest request, CancellationToken ct)
     {
         try
         {
-            var requestDto = _mapper.Map<CreateDishDTO>(request);
+            var dishDto = _mapper.Map<CreateDishDTO>(request);
 
-            await _dishService.CreateDishAsync(request.RestaurantId, requestDto, ct);
-
-            await Send.OkAsync(cancellation: ct);
+            await _dishService.CreateDishAsync(dishDto.RestaurantId, dishDto, ct);
+            await Send.OkAsync(ct);
         }
         catch (Exception ex)
         {
-            await ErrorHandler.HandleExceptionAsync<CreateDishRequest, DishDTO>(ex, Send, ct);
+            await ErrorHandler.HandleExceptionAsync<CreateDishRequest, DishDTO>(ex,Send, ct);
         }
     }
 }

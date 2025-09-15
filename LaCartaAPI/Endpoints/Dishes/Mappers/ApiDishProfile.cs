@@ -9,6 +9,6 @@ public class ApiDishProfile : Profile
     public ApiDishProfile()
     {
         CreateMap<CreateDishRequest, CreateDishDTO>();
-        CreateMap<UpdateDishRequest, UpdateRestaurantDTO>();
+        CreateMap<UpdateDishRequest, UpdateDishDTO>();
     }
 }

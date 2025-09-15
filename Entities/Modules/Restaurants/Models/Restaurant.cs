@@ -11,12 +11,12 @@ public class Restaurant : BaseEntity
     public required string Name { get; set; }
     public required string Email { get; set; }
     public required string PhoneNumber { get; set; }
+    //public string? QrCode { get; set;}
     public string? Image { get; set; }
     public bool HasDelivery { get; set; }
     public string Description { get; set; }
     public TimeSpan OpenHour { get; set; }
     public TimeSpan CloseHour { get; set; }
-
     public int UserId { get; set; }
     public User? User { get; set; }
 
