@@ -14,8 +14,9 @@ public interface IDishRepository
 
     // Comandos
     Task AddAsync(Dish dish, CancellationToken ct);
-    Task UpdateAsync( CancellationToken ct);
-    Task ToggleStateAsync(int id, CancellationToken ct);
+    Task UpdateAsync(CancellationToken ct);
+    Task<bool> DeleteAsync(int id, CancellationToken ct);
+    
 
 
 }

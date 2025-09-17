@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Threading.Tasks;
 using Domain.Modules.Dishs.Interfaces;
 using Domain.Modules.Dishs.Models;
 using Domain.Modules.Shared.Exceptions;
@@ -63,12 +58,6 @@ public class DishRepository : IDishRepository
         }
     }
 
-    public Task ToggleStateAsync(int id, CancellationToken ct)
-    {
-        throw new NotImplementedException();
-    }
-
-
     public async Task UpdateAsync(CancellationToken ct)
     {
         try
@@ -79,5 +68,16 @@ public class DishRepository : IDishRepository
         {
             throw;
         }
+    }
+
+    public async Task<bool> DeleteAsync(int id, CancellationToken ct)
+    {
+        var dish = await GetByIdAsync(id, ct);
+        if (dish == null)
+            return false; // No existe, no se eliminó
+
+        _db.Dishs.Remove(dish);
+        await _db.SaveChangesAsync(ct);
+        return true; // Se eliminó correctamente
     }
 }
