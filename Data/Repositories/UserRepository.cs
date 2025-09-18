@@ -9,54 +9,76 @@ public class UserRepository : IUserRepository
 {
     private readonly AppDbContext _db;
 
+
     public UserRepository(AppDbContext db) { _db = db; }
 
 
-
-    public Task AddAsync(User user, CancellationToken ct)
+    #region Getters
+    public async Task<IEnumerable<User>> GetAllAsync(CancellationToken ct)
     {
-        throw new NotImplementedException();
-    }
-
-
-    public Task<IEnumerable<User>> GetAllAsync(CancellationToken ct)
-    {
-        throw new NotImplementedException();
-    }
-
-
-    public Task<User?> GetByEmailAsync(string email, CancellationToken ct)
-    {
-        throw new NotImplementedException();
+        var user = await _db.Users
+        .Include(u => u.Role)
+        .Include(u => u.Favorites)
+        .ToListAsync(ct);
+        return user;
     }
 
 
     public async Task<User?> GetByIdAsync(int userId, CancellationToken ct)
     {
-        try
-        {
-            var user = await _db.Users
-                .Include(u => u.Role)
-                .Include(u => u.Favorites)
-                .Include(u => u.ManagedRestaurants)
-               .FirstOrDefaultAsync(r => r.Id == userId);
-            return user;
-        }
-        catch 
-        {
-            throw;
-        }
+        var user = await _db.Users
+           .Include(u => u.Role)
+           .Include(u => u.Favorites)
+           .FirstOrDefaultAsync(r => r.Id == userId, ct);
+        return user;
     }
+    #endregion
 
 
-    public Task<bool> IsEmailUniqueAsync(string email,CancellationToken ct,int? excludeUserId = null)
+    #region Commands
+    public async Task ActivateAsync(User user, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        user.IsActive = true;
+        _db.Users.Update(user);
+        await _db.SaveChangesAsync(ct);
     }
 
 
-    public Task UpdateAsync(User user, CancellationToken ct)
+    public async Task AddAsync(User user, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        await _db.Users.AddAsync(user);
+        await _db.SaveChangesAsync(ct);
     }
+
+
+    public async Task DeactivateAsync(User user, CancellationToken ct)
+    {
+        user.IsActive = false;
+        _db.Users.Update(user);
+        await _db.SaveChangesAsync(ct);
+    }
+
+
+    public async Task DeleteAsyn(User user, CancellationToken ct)
+    {
+        _db.Users.Remove(user);
+        await _db.SaveChangesAsync(ct);
+    }
+
+
+    public async Task UpdateAsync(User user, CancellationToken ct)
+    {
+        _db.Users.Update(user);
+        await _db.SaveChangesAsync(ct);
+    }
+    #endregion
+
+
+    #region Validations
+    public async Task<bool> IsEmailUniqueAsync(string email, CancellationToken ct, int? excludeUserId = null)
+    {
+        return !await _db.Users
+            .AnyAsync(u => u.Email == email && (!excludeUserId.HasValue || u.Id != excludeUserId.Value));
+    }
+    #endregion
 }

@@ -2,8 +2,13 @@
 using Business.Modules.Dishes.Services;
 using Business.Modules.Restaurants.Mappers;
 using Business.Modules.Restaurants.Services;
+using Business.Modules.Security.Service;
+using Business.Modules.Users.Mappers;
+using Business.Modules.Users.Service;
 using Data.FileStorage;
 using Domain.FileStorage;
+using Domain.Modules.Security.Interfaces;
+using LaCartaAPI.Endpoints.Users.Mappers;
 
 
 
@@ -17,6 +22,10 @@ public static class ApplicationServices
         //Servicios de negocio
         services.AddScoped<IRestaurantServices, RestaurantServices>();
         services.AddScoped<IDishServices, DishServices>();
+        services.AddScoped<IUserService, UserService>();
+
+        //Servicios Seguridad
+        services.AddScoped<IPasswordService, PasswordService>();
 
         //Servicio Imagenes
         services.AddScoped<IFileStorageService, LocalFileStorageService>();
@@ -41,7 +50,9 @@ public static class ApplicationServices
         services.AddAutoMapper(cfg => cfg.AddMaps(typeof(ApiRestaurantProfile).Assembly));
         services.AddAutoMapper(cfg => cfg.AddMaps(typeof(ApiDishProfile).Assembly));
         services.AddAutoMapper(cfg => cfg.AddMaps(typeof(DishProfile).Assembly));
-        
+        services.AddAutoMapper(cfg => cfg.AddMaps(typeof(UserProfile).Assembly));
+        services.AddAutoMapper(cfg => cfg.AddMaps(typeof(ApiUserProfile).Assembly));
+
         return services;
     }
 }

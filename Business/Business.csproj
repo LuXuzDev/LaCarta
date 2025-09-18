@@ -9,8 +9,6 @@
   <ItemGroup>
     <Folder Include="Modules\Dishs\DTOs\" />
     <Folder Include="Modules\Dishs\Mappers\" />
-    <Folder Include="Modules\Users\DTOs\" />
-    <Folder Include="Modules\Users\Mappers\" />
   </ItemGroup>
 
   <ItemGroup>

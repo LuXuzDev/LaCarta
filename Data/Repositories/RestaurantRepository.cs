@@ -12,59 +12,39 @@ public class RestaurantRepository : IRestaurantRepository
 
     public RestaurantRepository(AppDbContext db) { _db = db; }
 
+
     #region Getters
     public async Task<IEnumerable<Restaurant>> GetAllAsync(CancellationToken ct)
     {
-        try
-        {
-            var restaurants = await _db.Restaurants
-                .Include(r => r.Municipality)
-                .Include(r => r.User)
-                .Include(r => r.Dishes)
-                .ToListAsync();
-            return restaurants;
-        }
-        catch
-        {
-            throw;
-        }
+        var restaurants = await _db.Restaurants
+            .Include(r => r.Municipality)
+            .Include(r => r.User)
+            .Include(r => r.Dishes)
+            .ToListAsync(ct);
+        return restaurants;
     }
 
 
     public async Task<Restaurant?> GetByEmailAsync(string email, CancellationToken ct)
     {
-        try
-        {
-            var restaurant = await _db.Restaurants
-                .Include(r => r.Municipality)
-                .Include(r => r.User)
-                .Include(r => r.Dishes)
-                .FirstOrDefaultAsync(r => r.Email == email);
-            return restaurant;
-        }
-        catch
-        {
-            throw;
-        }
+        var restaurant = await _db.Restaurants
+            .Include(r => r.Municipality)
+            .Include(r => r.User)
+            .Include(r => r.Dishes)
+            .FirstOrDefaultAsync(r => r.Email == email, ct);
+        return restaurant;
     }
 
 
     public async Task<Restaurant?> GetByIdAsync(int restaurantId, CancellationToken ct)
     {
-        try
-        {
-            var restaurant = await _db.Restaurants
-                .Include(r => r.Municipality)
-                .Include(r => r.User)
-                .Include(r => r.Dishes)
-                .FirstOrDefaultAsync
-                (r => r.Id == restaurantId);
-            return restaurant;
-        }
-        catch
-        {
-            throw;
-        }
+        var restaurant = await _db.Restaurants
+            .Include(r => r.Municipality)
+            .Include(r => r.User)
+            .Include(r => r.Dishes)
+            .FirstOrDefaultAsync
+            (r => r.Id == restaurantId,ct);
+        return restaurant;
     }
 
 
@@ -74,7 +54,7 @@ public class RestaurantRepository : IRestaurantRepository
             .Include(r => r.Municipality)
             .Include(r => r.User)
             .Include(r => r.Dishes)
-            .ToListAsync();
+            .ToListAsync(ct);
     }
 
 
@@ -84,7 +64,7 @@ public class RestaurantRepository : IRestaurantRepository
            .Include(r => r.Municipality)
           .Include(r => r.User)
           .Include(r => r.Dishes)
-          .ToListAsync();
+          .ToListAsync(ct);
     }
 
 
@@ -94,77 +74,64 @@ public class RestaurantRepository : IRestaurantRepository
             .Include(r => r.Municipality)
           .Include(r => r.User)
           .Include(r => r.Dishes)
-          .ToListAsync();
+          .ToListAsync(ct);
     }
     #endregion
 
+
+
+    #region Commands
     public async Task AddAsync(Restaurant restaurant, CancellationToken ct)
     {
-        try
-        {
-            await _db.Restaurants.AddAsync(restaurant);
-            await _db.SaveChangesAsync();
-        }
-        catch
-        {
-            throw;
-        }
+        await _db.Restaurants.AddAsync(restaurant);
+        await _db.SaveChangesAsync(ct);
     }
 
 
-    public async Task UpdateAsync( CancellationToken ct)
+    public async Task UpdateAsync(Restaurant restaurant, CancellationToken ct)
     {
-        try
-        {
-            await _db.SaveChangesAsync(ct);
-        }
-        catch
-        {
-            throw;
-        }
+        _db.Restaurants.Update(restaurant);
+        await _db.SaveChangesAsync(ct);
     }
+
+
+    public async Task ActivateAsync(Restaurant restaurant, CancellationToken ct)
+    {
+        restaurant.IsActive = true;
+        _db.Restaurants.Update(restaurant);
+        await _db.SaveChangesAsync(ct);
+    }
+
+
+    public async Task DeactivateAsync(Restaurant restaurant, CancellationToken ct)
+    {
+        restaurant.IsActive = false;
+        _db.Restaurants.Update(restaurant);
+        await _db.SaveChangesAsync(ct);
+    }
+    #endregion
 
 
     #region Validations
     public async Task<bool> IsEmailUniqueAsync(string email, CancellationToken ct, int? excludeRestaurantId = null)
     {
-        try
-        {
-            return !await _db.Restaurants
-                .AnyAsync(r => r.Email == email && (!excludeRestaurantId.HasValue || r.Id != excludeRestaurantId.Value));
-        }
-        catch
-        {
-            throw;
-        }
+
+        return !await _db.Restaurants
+            .AnyAsync(r => r.Email == email && (!excludeRestaurantId.HasValue || r.Id != excludeRestaurantId.Value));
     }
 
 
     public async Task<bool> IsPhoneNumberUniqueAsync(string phoneNumber, CancellationToken ct, int? excludeRestaurantId = null)
     {
-        try
-        {
-            return !await _db.Restaurants
-                .AnyAsync(r => r.PhoneNumber == phoneNumber && (!excludeRestaurantId.HasValue || r.Id != excludeRestaurantId.Value));
-        }
-        catch
-        {
-            throw;
-        }
+        return !await _db.Restaurants
+            .AnyAsync(r => r.PhoneNumber == phoneNumber && (!excludeRestaurantId.HasValue || r.Id != excludeRestaurantId.Value));
     }
 
 
     public async Task<bool> IsNameUniqueAsync(string name, CancellationToken ct, int? excludeRestaurantId = null)
     {
-        try
-        {
-            return !await _db.Restaurants
-                .AnyAsync(r => r.Name == name && (!excludeRestaurantId.HasValue || r.Id != excludeRestaurantId.Value));
-        }
-        catch
-        {
-            throw;
-        }
+        return !await _db.Restaurants
+            .AnyAsync(r => r.Name == name && (!excludeRestaurantId.HasValue || r.Id != excludeRestaurantId.Value));
     }
     #endregion
 }

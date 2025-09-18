@@ -22,5 +22,7 @@ public interface IRestaurantRepository
 
     // Comandos
     Task AddAsync(Restaurant restaurant, CancellationToken ct);
-    Task UpdateAsync(CancellationToken ct);
+    Task UpdateAsync(Restaurant restaurant, CancellationToken ct);
+    Task ActivateAsync(Restaurant restaurant, CancellationToken ct);
+    Task DeactivateAsync(Restaurant restaurant, CancellationToken ct);
 }

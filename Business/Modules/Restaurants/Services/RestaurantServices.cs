@@ -133,7 +133,7 @@ public class RestaurantServices : IRestaurantServices
 
         UpdateRestaurat(restaurant,restaurantExists);
         
-        await _restaurantRepository.UpdateAsync(ct);
+        await _restaurantRepository.UpdateAsync(restaurantExists,ct);
     }
 
 
